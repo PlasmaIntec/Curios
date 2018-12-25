@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Intercept</title>
+    <style>
+    	* { padding: 0; margin: 0; }
+    	canvas { background: #eee; display: block; margin: 0 auto; }
+    </style>
+    <script src='lib/jquery.js'></script>
+</head>
+<body>
+
+<canvas id='myCanvas' width='800' height='600' tabindex='1'></canvas>
+<button type='button' id='click'>LICK</button>
+<div id='modular'>o i am slain</div>
+
+<script>
+
+	var canvas = document.getElementById('myCanvas');
+	var ctx = canvas.getContext('2d');
+
+	var spawnCircle = function (x, y) {
+		ctx.beginPath();
+		ctx.rect(x, y, 10, 10);
+		ctx.fillStyle = 'red';
+		ctx.fill();
+		ctx.closePath();
+	};
+
+	ctx.beginPath();
+	ctx.rect(20, 40, 50, 50);
+	ctx.fillStyle = 'chartreuse';
+	ctx.fill();
+	ctx.closePath();
+
+	ctx.beginPath();
+	ctx.arc(240, 160, 20, 0, Math.PI*2, false);
+	ctx.fillStyle = 'green';
+	ctx.fill();
+	ctx.closePath();
+
+	ctx.beginPath();
+	ctx.rect(160, 10, 100, 40);
+	ctx.strokeStyle = 'rgba(0, 0, 255, 0.5)';
+	ctx.stroke();
+	ctx.closePath();
+
+	var spawn = function (mouse) {
+		$('#modular').text('i am revive');
+		let actualX = mouse.clientX - $('canvas').offset().left;
+		let actualY = mouse.clientY - $('canvas').offset().top;
+		spawnCircle(actualX, actualY);
+	}
+
+	var mousePosition = function (mouse) {
+		let xPos = mouse.clientX - $('canvas').offset().left;
+		let yPos = mouse.clientY - $('canvas').offset().top;
+		$('#modular').text(`current mouse at: ${xPos} , ${yPos}`);
+		return mouse;
+	}
+
+	var keyPress = function (press) {
+		switch (press.key) {
+			case 'ArrowLeft':
+				alert('left');
+				break;
+			case 'ArrowRight':
+				alert('right');
+				break;
+			case 'ArrowUp':
+				alert('up');
+				break;
+			case 'ArrowDown':
+				alert('down');
+				break;
+			default:
+				break;
+		}
+	};
+
+	$('canvas').on('click', spawn);
+	$('canvas').on('mousemove', mousePosition);
+	$('canvas').on('keydown', keyPress);
+
+	var x = canvas.width/2;
+	var y = canvas.height-30;
+	var dx = 2;
+	var dy = -2;
+	function draw() {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.beginPath();
+		ctx.arc(x, y, 10, 0, Math.PI*2);
+		ctx.fillStyle = '#0095DD';
+		ctx.fill();
+		ctx.closePath();
+		x += dx;
+		y += dy;
+	}
+
+	setInterval(draw, 100);
+
+</script>
+
+</body>
+</html>

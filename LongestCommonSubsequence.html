@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Longest Common Subsequence Generator</title>
+	<script src='hrsf110-twiddler/jquery.js'></script>
+	<style>
+	* {
+		font-family: Andale Mono, monospace;
+		font-size: 150%;
+		text-align: center;
+	}
+	@keyframes spin {
+		from {transform:rotateY(0deg); color: red;}
+		to {transform:rotateY(360deg); color: blue;}
+	}
+	#crazy {
+		animation: spin 5s linear infinite;
+	}
+	</style>
+</head>
+<body>
+	<div>First String</div>
+	<input type='text' class='form' id='first'>
+	<div>Second String</div>
+	<input type='text' class='form' id='second'>
+	<div id='crazy'>processing.....</div>
+	<div>Result String</div>
+	<input type='text' id='result' disabled='disabled'>
+</body>
+<script>
+
+	var max = function (a, b) {
+		return (a > b) ? a : b;
+	}
+
+	var getMatrix = function (l, w) {
+		let m = Array(l + 1);
+		for (let i = 0; i < m.length; i++) {
+			let n = Array(w + 1);
+			for (let j = 0; j < n.length; j++) {
+				n[j] = 0;
+			}
+			m[i] = n;
+		}
+		return m;
+	}
+
+	var traceBack = function (m, a, b) {
+		let i = m.length - 1;
+		let j = m[0].length - 1;
+		let x = m[i][j];
+		let r = '';
+		while (i !== 0 && j !== 0) {
+			while (!(m[i-1][j] === x-1 && m[i][j-1] === x-1)) {
+				if (m[i-1][j] === x) {
+					i--;
+				} else {
+					j--;
+				}
+			}
+			r = a[i-1] + r;
+			i--;
+			j--;
+			x = m[i][j];
+		}
+		return r;
+	}
+
+	var longestCommonSubsequence = function (first, second) {
+		let a = first.split('');
+		let b = second.split('');
+		let m = getMatrix(a.length, b.length);
+		let r = '';
+		for (let i = 0; i < a.length; i++) {
+			for (let j = 0; j < b.length; j++) {
+				if (a[i] === b[j]) {
+					m[i+1][j+1] = m[i][j] + 1;
+				} else {
+					m[i+1][j+1] = max(m[i][j+1], m[i+1][j]);
+				}
+			}
+		}
+		return traceBack(m, a, b);
+	}
+
+	var proc = function (e) {
+		var resultString = longestCommonSubsequence($('#first').val().toString(), $('#second').val().toString());
+		$('#result').val(resultString);
+	}
+
+	$('body').on('input', '.form', proc);
+
+</script>
+</html>

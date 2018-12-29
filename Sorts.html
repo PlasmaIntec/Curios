@@ -1,0 +1,152 @@
+<script src='lib/jquery.js'></script>
+<div id="banner-message">
+  <p id='list'>List</p>
+  <input type='range' min='1' max='10' value='5' id='slider'> <br>
+  <p id='size'>list size: 5</p>
+  <button id='randomize'>Randomize List</button> 
+  <button id='sort'>Sort List</button>
+  <button id='step'>Step</button>
+  <button id='show'>Show</button>
+</div>
+<style>
+body {
+  background: #20262E;
+  padding: 20px;
+  font-family: Helvetica;
+}
+
+#banner-message {
+  background: #fff;
+  border-radius: 4px;
+  padding: 20px;
+  font-size: 25px;
+  text-align: center;
+  transition: all 0.2s;
+  margin: 0 auto;
+  width: 300px;
+}
+
+button {
+  background: #0084ff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 14px;
+  font-size: 15px;
+  color: #fff;
+}
+
+#banner-message.alt {
+  background: #0084ff;
+  color: #fff;
+  margin-top: 40px;
+  width: 200px;
+}
+
+#banner-message.alt button {
+  background: #fff;
+  color: #000;
+}
+</style>
+<script>
+var banner = $("#banner-message");
+var slider = $('#slider');
+var size = $('#size');
+var randomizeButton = $("#randomize");
+var sortButton = $("#sort");
+var stepButton = $("#step");
+var showButton = $("#show");
+var list = $('#list');
+var listSize = 5;
+var rl;
+var rlhtml;
+
+var swap = function(list, i1, i2) {
+    var temp = list[i1];
+    list[i1] = list[i2];
+    list[i2] = temp;
+}
+
+var listToHtml = function (list) {
+	rlhtml = '[';
+	for (let i = 0; i < list.length; i++) {
+		rlhtml += '<span>' + list[i] + '</span>,';
+	}
+	rlhtml = rlhtml.slice(0,-1) + ']';
+	return rlhtml;
+}
+
+var bubbleSort = function (list) {
+	for (let i = 0; i < rl.length; i++) {
+  	for (let j = i; j < rl.length; j++) {
+    	if (rl[i] > rl[j]) {
+      	swap(rl, i, j);
+      }
+    }
+  }	
+}
+
+var getList = function () {	
+	let list = [];
+  for (let i = 0; i < listSize; i++) {
+  	let rand = ~~(10*Math.random());
+  	list.push(rand);
+  }
+  return list;
+}
+
+slider.on('change', function(){
+	listSize = this.value;
+	size.text('list size: ' + listSize);
+});
+
+randomizeButton.on("click", function(){
+  rl = getList();
+  rlhtml = listToHtml(rl);
+  list.html(rlhtml);
+  banner.addClass("alt");
+});
+
+sortButton.on("click", function(){
+	bubbleSort(rl);
+	rlhtml = listToHtml(rl);
+  list.html(rlhtml);
+  banner.addClass("alt");
+});
+
+stepButton.on('click', function(){
+	let tempi, tempj;
+	for (let i = 0; i < rl.length; i++) {
+  	for (let j = i; j < rl.length; j++) {
+    	if (rl[i] > rl[j]) {
+      	swap(rl, i, j);
+      	tempi = i+1;
+      	tempj = j+1;
+      	i = j = rl.length; // exit nested loop
+      }
+    }
+  }		
+	rlhtml = listToHtml(rl);
+  list.html(rlhtml);
+  banner.addClass("alt");
+  $('span:nth-child('+tempi+')').css('background', 'red');
+  $('span:nth-child('+tempj+')').css('background', 'red');
+});
+
+showButton.on('click', function(){
+	let tempi, tempj;
+	for (let i = 0; i < rl.length; i++) {
+  	for (let j = i; j < rl.length; j++) {
+    	if (rl[i] > rl[j]) {
+      	tempi = i+1;
+      	tempj = j+1;
+      	i = j = rl.length; // exit nested loop
+      }
+    }
+  }		
+	rlhtml = listToHtml(rl);
+  list.html(rlhtml);
+  banner.addClass("alt");
+  $('span:nth-child('+tempi+')').css('background', 'orange');
+  $('span:nth-child('+tempj+')').css('background', 'orange');
+});
+</script>
